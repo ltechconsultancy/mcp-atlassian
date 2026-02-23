@@ -29,6 +29,7 @@ class ConfluenceConfig:
     api_token: str | None = None  # API token used as password
     personal_token: str | None = None  # Personal access token (Server/DC)
     oauth_config: OAuthConfig | BYOAccessTokenOAuthConfig | None = None
+    cloud_id: str | None = None  # Cloud ID for scoped API tokens (routes via api.atlassian.com)
     ssl_verify: bool = True  # Whether to verify SSL certificates
     spaces_filter: str | None = None  # List of space keys to filter searches
     http_proxy: str | None = None  # HTTP proxy URL
@@ -90,6 +91,7 @@ class ConfluenceConfig:
             ValueError: If any required environment variable is missing
         """
         url = os.getenv("CONFLUENCE_URL")
+        cloud_id = os.getenv("CONFLUENCE_CLOUD_ID")
         if not url and not os.getenv("ATLASSIAN_OAUTH_ENABLE"):
             error_msg = (
                 "Missing required CONFLUENCE_URL environment variable. "
@@ -194,6 +196,7 @@ class ConfluenceConfig:
             api_token=api_token,
             personal_token=personal_token,
             oauth_config=oauth_config,
+            cloud_id=cloud_id,
             ssl_verify=ssl_verify,
             spaces_filter=spaces_filter,
             http_proxy=http_proxy,

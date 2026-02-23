@@ -101,6 +101,7 @@ class JiraConfig:
     api_token: str | None = None  # API token (Cloud)
     personal_token: str | None = None  # Personal access token (Server/DC)
     oauth_config: OAuthConfig | BYOAccessTokenOAuthConfig | None = None
+    cloud_id: str | None = None  # Cloud ID for scoped API tokens (routes via api.atlassian.com)
     ssl_verify: bool = True  # Whether to verify SSL certificates
     projects_filter: str | None = None  # List of project keys to filter searches
     http_proxy: str | None = None  # HTTP proxy URL
@@ -166,6 +167,7 @@ class JiraConfig:
             ValueError: If required environment variables are missing or invalid
         """
         url = os.getenv("JIRA_URL")
+        cloud_id = os.getenv("JIRA_CLOUD_ID")
         if not url and not os.getenv("ATLASSIAN_OAUTH_ENABLE"):
             error_msg = (
                 "Missing required JIRA_URL environment variable. "
@@ -269,6 +271,7 @@ class JiraConfig:
             api_token=api_token,
             personal_token=personal_token,
             oauth_config=oauth_config,
+            cloud_id=cloud_id,
             ssl_verify=ssl_verify,
             projects_filter=projects_filter,
             http_proxy=http_proxy,

@@ -100,17 +100,29 @@ class JiraClient:
                 timeout=self.config.timeout,
             )
         else:  # basic auth
-            logger.debug(
-                f"Initializing Jira client with Basic auth. "
-                f"URL: {self.config.url}, Username: {self.config.username}, "
-                f"API Token present: {bool(self.config.api_token)}, "
-                f"Is Cloud: {self.config.is_cloud}"
-            )
+            # Determine API URL - use gateway URL for scoped tokens when cloud_id is set
+            if self.config.cloud_id:
+                api_url = f"https://api.atlassian.com/ex/jira/{self.config.cloud_id}"
+                is_cloud = True
+                logger.debug(
+                    f"Initializing Jira client with Basic auth (scoped token mode). "
+                    f"Gateway URL: {api_url}, Username: {self.config.username}, "
+                    f"Cloud ID: {self.config.cloud_id}"
+                )
+            else:
+                api_url = self.config.url
+                is_cloud = self.config.is_cloud
+                logger.debug(
+                    f"Initializing Jira client with Basic auth. "
+                    f"URL: {self.config.url}, Username: {self.config.username}, "
+                    f"API Token present: {bool(self.config.api_token)}, "
+                    f"Is Cloud: {self.config.is_cloud}"
+                )
             self.jira = Jira(
-                url=self.config.url,
+                url=api_url,
                 username=self.config.username,
                 password=self.config.api_token,
-                cloud=self.config.is_cloud,
+                cloud=is_cloud,
                 verify_ssl=self.config.ssl_verify,
                 timeout=self.config.timeout,
             )
