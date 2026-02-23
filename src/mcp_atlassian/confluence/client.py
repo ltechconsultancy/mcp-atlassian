@@ -89,7 +89,8 @@ class ConfluenceClient:
         else:  # basic auth
             # Determine API URL - use gateway URL for scoped tokens when cloud_id is set
             if self.config.cloud_id:
-                api_url = f"https://api.atlassian.com/ex/confluence/{self.config.cloud_id}"
+                # Note: /wiki suffix is required for Confluence Cloud API
+                api_url = f"https://api.atlassian.com/ex/confluence/{self.config.cloud_id}/wiki"
                 is_cloud = True
                 logger.debug(
                     f"Initializing Confluence client with Basic auth (scoped token mode). "
